@@ -1,4 +1,5 @@
 import inquirer from "inquirer"
+import colors from 'colors'
 
 const question = [
     {
@@ -34,14 +35,86 @@ export const menu = async() => {
     return mainOpt;
 }
 
-export const showOpt = async(opt = []) => {
+const optMenu = async(type, _name, message, arr, back) => {
+    console.clear();
+    const choices = arr.concat(
+        [
+            new inquirer.Separator(),
+            {
+                value: false,
+                name: back.yellow        
+            }
+        ]
+    );
+    const answ = {
+        type,
+        name: _name,
+        message,
+        choices
+    }
+    const {name} = await inquirer.prompt(answ)
+    return name;
+}
+
+export const showMembers = async(membersList = []) => {
+    console.clear();
+    //console.log(membersList);
     
-    if (opt.length < 1) return true;
-    let choices = [
-        {
-            
+    if (membersList.length === 0) {
+        console.log('Todavia no hay ningun socio cargado'.yellow);
+        return 0;
+    }
+
+    let memberArr = []
+
+    membersList.forEach(member => {
+        const status = (debt) => {
+            if (debt > 0){
+                return 'Debe: ' + `${member.debt}`.red
+            } else if (debt < 0){
+                return 'Tiene a favor: ' + `${member.debt}`.green
+            } else {
+                return 'Esta al dia'.green
+            }
+        } 
+
+        const choice = {
+            value: member.memberNumber,
+            name: `[ ${member.memberNumber} ] ::${member.name} ${member.surename} :: ${status()} `
         }
-    ]
+        memberArr.push(choice) 
+    })
 
+    const members = await optMenu('list', 'members', 'Lista de Socios',memberArr, 'Volver')
 
+    return members;
+}
+
+// falta validar los tipos
+export const userInput = async(message) =>{
+    const answ = {
+        type: 'input',
+        name: 'user_input',
+        message,
+        validate ( value ) {
+            if(value.length === 0) return 'Input necesario';
+
+            return true
+        }
+    }
+    const {user_input} = await inquirer.prompt(answ);
+    return user_input;
+}
+
+export const pause = async() => {
+    
+    const {pause} = await inquirer.prompt([
+        {
+            type: 'input',
+            name: 'pause',
+            message: 'Precione ' + 'ENTER'.green + ' para continuar'
+        }
+    ]);
+
+    return pause;
 }

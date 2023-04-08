@@ -1,8 +1,7 @@
-import { Member } from "Member";
+import {Member} from "./Member.js";
 
 export class Members {
-    _objMembers;
-
+    _objMembers = {};
 
     get memberArr () {
         const arr = [];
@@ -28,10 +27,16 @@ export class Members {
 
     createNewMember(number, name,surename,date=Date.now(),familyG){
         const member = new Member(number,name,surename,date,familyG)
-        if(this.memberArr.incudes(member)) {
+        if(this.memberArr.includes(member)) {
             console.log('Este miembro ya existe');
             return;
         }
         this._objMembers[member._memberNumber] = member;
     };
+
+    readMembersDB(data) {
+        data.forEach(member => {
+            this.createNewMember(member._memberNumber,member._name, member._surename)
+        })
+    }
 }
