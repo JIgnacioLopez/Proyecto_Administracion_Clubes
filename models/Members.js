@@ -32,6 +32,7 @@ export class Members {
             return;
         }
         this._objMembers[member._memberNumber] = member;
+        
     };
 
     readMembersDB(data) {

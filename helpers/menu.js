@@ -90,6 +90,33 @@ export const showMembers = async(membersList = []) => {
     return members;
 }
 
+// mas adelante agregar pedrido como parametro
+export const showPayments =  async(paymentList = []) => {
+    console.clear();
+
+    if (paymentList.length === 0) {
+        console.log('Todavia no hay ningun pago ingresado'.yellow);
+        return 0;
+    }
+
+    let paymentArr = []
+
+    paymentList.forEach(payment => {
+        const value = payment.id;
+        const status = (payment.quantity < 0)
+                        ? `${payment.quantity}`.red
+                        : `${payment.quantity}`.green
+        const choice = {
+            value,
+            name: `${payment.date} :: ${payment.creditor} - ${payment.quantity}`
+        }
+        paymentArr.push(choice)
+    })
+
+    const payments = await optMenu('list','payments', 'Pagos', paymentArr, 'Volver' )
+    return payments;
+}
+
 // falta validar los tipos
 export const userInput = async(message) =>{
     const answ = {
